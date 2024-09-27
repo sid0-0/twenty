@@ -23,6 +23,7 @@ type useRecordActionBarProps = {
   selectedRecordIds: string[];
   callback?: () => void;
   totalNumberOfRecordsSelected?: number;
+  isSoftDeleteActive?: boolean;
 };
 
 export const useRecordActionBar = ({
@@ -30,6 +31,7 @@ export const useRecordActionBar = ({
   selectedRecordIds,
   callback,
   totalNumberOfRecordsSelected,
+  isSoftDeleteActive = false,
 }: useRecordActionBarProps) => {
   const setContextMenuEntries = useSetRecoilState(contextMenuEntriesState);
   const setActionBarEntriesState = useSetRecoilState(actionBarEntriesState);
@@ -82,7 +84,7 @@ export const useRecordActionBar = ({
   const { deleteTableData } = useDeleteTableData(baseTableDataParams);
 
   const handleDeleteClick = useCallback(() => {
-    deleteTableData(selectedRecordIds);
+    deleteTableData(selectedRecordIds, true);
   }, [deleteTableData, selectedRecordIds]);
 
   const { progress, download } = useExportTableData({
@@ -94,8 +96,11 @@ export const useRecordActionBar = ({
 
   const numberOfSelectedRecords =
     totalNumberOfRecordsSelected ?? selectedRecordIds.length;
+
   const canDelete =
-    !isRemoteObject && numberOfSelectedRecords < DELETE_MAX_COUNT;
+    !isSoftDeleteActive &&
+    !isRemoteObject &&
+    numberOfSelectedRecords < DELETE_MAX_COUNT;
 
   const menuActions: ContextMenuEntry[] = useMemo(
     () =>

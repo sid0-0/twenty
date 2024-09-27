@@ -48,8 +48,11 @@ export const RecordIndexTableContainerEffect = ({
     setAvailableTableColumns(columnDefinitions);
   }, [columnDefinitions, setAvailableTableColumns]);
 
-  const { tableRowIdsState, hasUserSelectedAllRowsState } =
-    useRecordTableStates(recordTableId);
+  const {
+    tableRowIdsState,
+    hasUserSelectedAllRowsState,
+    isSoftDeleteActiveState,
+  } = useRecordTableStates(recordTableId);
 
   // TODO: verify this instance id works
   const entityCountInCurrentView = useRecoilComponentValueV2(
@@ -58,6 +61,7 @@ export const RecordIndexTableContainerEffect = ({
   );
   const hasUserSelectedAllRows = useRecoilValue(hasUserSelectedAllRowsState);
   const tableRowIds = useRecoilValue(tableRowIdsState);
+  const isSoftDeleteActive = useRecoilValue(isSoftDeleteActiveState);
 
   const selectedRowIds = useRecoilValue(selectedRowIdsSelector());
 
@@ -74,6 +78,7 @@ export const RecordIndexTableContainerEffect = ({
     selectedRecordIds: selectedRowIds,
     callback: resetTableRowSelection,
     totalNumberOfRecordsSelected: numSelected,
+    isSoftDeleteActive,
   });
 
   const handleToggleColumnFilter = useHandleToggleColumnFilter({
