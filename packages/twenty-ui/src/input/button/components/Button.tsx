@@ -3,7 +3,7 @@ import { css, useTheme } from '@emotion/react';
 import styled from '@emotion/styled';
 import { Pill } from '@ui/components/Pill/Pill';
 import { IconComponent } from '@ui/display/icon/types/IconComponent';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
 export type ButtonSize = 'medium' | 'small';
@@ -14,7 +14,7 @@ export type ButtonAccent = 'default' | 'blue' | 'danger';
 export type ButtonProps = {
   className?: string;
   Icon?: IconComponent;
-  title?: string;
+  title?: ReactNode;
   fullWidth?: boolean;
   variant?: ButtonVariant;
   inverted?: boolean;
@@ -31,7 +31,7 @@ export type ButtonProps = {
   dataTestId?: string;
   shortcut?: string;
   ariaLabel?: string;
-} & React.ComponentProps<'button'>;
+} & Omit<React.ComponentProps<'button'>, 'title'>;
 
 const StyledButton = styled('button', {
   shouldForwardProp: (prop) =>

@@ -1320,6 +1320,7 @@ export type User = {
   workspaceMember?: Maybe<WorkspaceMember>;
   workspaceMembers?: Maybe<Array<WorkspaceMember>>;
   workspaces: Array<UserWorkspace>;
+  totpConfigured: Scalars['Boolean']; 
 };
 
 export type UserEdge = {

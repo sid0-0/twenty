@@ -6,6 +6,7 @@ import { DeleteAccount } from '@/settings/profile/components/DeleteAccount';
 import { EmailField } from '@/settings/profile/components/EmailField';
 import { NameFields } from '@/settings/profile/components/NameFields';
 import { ProfilePictureUploader } from '@/settings/profile/components/ProfilePictureUploader';
+import { TwoFactorAuth } from '@/settings/profile/components/TwoFactorAuth';
 import { getSettingsPagePath } from '@/settings/utils/getSettingsPagePath';
 import { SettingsPath } from '@/types/SettingsPath';
 import { SubMenuTopBarContainer } from '@/ui/layout/page/components/SubMenuTopBarContainer';
@@ -36,6 +37,9 @@ export const SettingsProfile = () => (
           description="The email associated to your account"
         />
         <EmailField />
+      </Section>
+      <Section>
+        <TwoFactorAuth />
       </Section>
       <Section>
         <ChangePassword />

@@ -11,6 +11,7 @@ export type CurrentUser = Pick<
   | 'canImpersonate'
   | 'onboardingStatus'
   | 'userVars'
+  | 'totpConfigured'
 >;
 
 export const currentUserState = createState<CurrentUser | null>({
