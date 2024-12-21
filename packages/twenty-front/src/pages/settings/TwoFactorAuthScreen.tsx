@@ -72,7 +72,7 @@ export const TwoFactorAuthScreen = () => {
             title="Verify the code from the app"
             description="Copy past the code below"
           />
-          <CodeInput />
+          <CodeInput length={6} />
         </Section>
         <Section>
           <H2Title
