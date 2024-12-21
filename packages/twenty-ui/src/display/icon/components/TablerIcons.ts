@@ -227,6 +227,7 @@ export {
   IconSettingsAutomation,
   IconSlash,
   IconSortAZ,
+  IconShield,
   IconSortDescending,
   IconSortZA,
   IconSparkles,

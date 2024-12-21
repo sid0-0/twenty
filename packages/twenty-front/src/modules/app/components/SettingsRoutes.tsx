@@ -123,6 +123,12 @@ const SettingsProfile = lazy(() =>
   })),
 );
 
+const Settings2FA = lazy(() =>
+  import('~/pages/settings/TwoFactorAuthScreen').then((module) => ({
+    default: module.TwoFactorAuthScreen,
+  })),
+);
+
 const SettingsAppearance = lazy(() =>
   import(
     '~/pages/settings/profile/appearance/components/SettingsAppearance'
@@ -280,6 +286,7 @@ export const SettingsRoutes = ({
   <Suspense fallback={<SettingsSkeletonLoader />}>
     <Routes>
       <Route path={SettingsPath.ProfilePage} element={<SettingsProfile />} />
+      <Route path={SettingsPath.TwoFactorAuth} element={<Settings2FA />} />
       <Route path={SettingsPath.Appearance} element={<SettingsAppearance />} />
       <Route path={SettingsPath.Accounts} element={<SettingsAccounts />} />
       <Route path={SettingsPath.NewAccount} element={<SettingsNewAccount />} />
