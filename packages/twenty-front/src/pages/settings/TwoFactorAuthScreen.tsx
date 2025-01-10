@@ -3,11 +3,15 @@ import { SettingsPath } from '@/types/SettingsPath';
 import { SubMenuTopBarContainer } from '@/ui/layout/page/components/SubMenuTopBarContainer';
 import { Button, CircularProgressBar, H2Title, Section } from 'twenty-ui';
 import styled from '@emotion/styled';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { currentUserState } from '@/auth/states/currentUserState';
 import { useEffect, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import CodeInput from '@/ui/input/components/CodeInput';
+import { useNavigate } from 'react-router-dom';
+import { currentWorkspaceMemberState } from '@/auth/states/currentWorkspaceMemberState';
+import { CoreObjectNameSingular } from '@/object-metadata/types/CoreObjectNameSingular';
+import { useUpdateOneRecord } from '@/object-record/hooks/useUpdateOneRecord';
 
 const Styled2FAContainer = styled.div`
   display: flex;
@@ -29,18 +33,37 @@ const StyledQRCodeContainer = styled.div`
   padding: 16px;
 `;
 
+const generateRandomBase32Secret = (length: number) => {
+  const candidates = 'ABCDEFGHIJKLMNOPQRSTUV234567';
+  return Array.from({ length })
+    .map(() => candidates[Math.floor(Math.random() * candidates.length)])
+    .join('');
+};
+
 export const TwoFactorAuthScreen = () => {
-  const currentUser = useRecoilValue(currentUserState);
+  // const currentUser = useRecoilValue(currentUserState);
+  const navigate = useNavigate();
 
   const [totpSecret, setTotpSeret] = useState('');
 
-  const isTotpConfigured = !!currentUser?.totpConfigured;
+  const [currentWorkspaceMember, setCurrentWorkspaceMember] = useRecoilState(
+    currentWorkspaceMemberState,
+  );
+  const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
+  const { updateOneRecord: updateWorkspaceMemberData } = useUpdateOneRecord({
+    objectNameSingular: CoreObjectNameSingular.WorkspaceMember,
+  });
+
+  const isTotpConfigured = !!currentWorkspaceMember?.totpConfigured;
 
   useEffect(() => {
     if (isTotpConfigured) return;
-    // TODO: generate this server side
-    setTotpSeret(crypto.randomUUID());
-  }, [isTotpConfigured]);
+    const generatedSecret = generateRandomBase32Secret(16);
+
+    setTotpSeret(
+      `otpauth://totp/Twenty:${currentUser?.email}?secret=${generatedSecret}&issuer=Twenty`,
+    );
+  }, [currentUser?.email, isTotpConfigured]);
 
   let content = null;
 
@@ -72,15 +95,42 @@ export const TwoFactorAuthScreen = () => {
             title="Verify the code from the app"
             description="Copy past the code below"
           />
-          <CodeInput length={6} />
-        </Section>
-        <Section>
-          <H2Title
-            title="Disable two-factor Authentication"
-            description="Disabling Two-factor Authentication significantly increases the risk of unauthorized access to your account."
+          <CodeInput
+            length={6}
+            onAutoSubmit={async (inputValue: string) => {
+              if (!currentWorkspaceMember) return;
+              // TODO: API call to set totpConfigured to true, and set the totp on server
+              console.log(inputValue);
+
+              await updateWorkspaceMemberData({
+                idToUpdate: currentWorkspaceMember.id,
+                updateOneRecordInput: {
+                  totpSecret,
+                },
+              });
+
+              // setCurrentWorkspaceMember({
+              //   ...currentWorkspaceMember,
+              //   name: {
+              //     firstName,
+              //     lastName,
+              //   },
+              // });
+
+              // navigate(SettingsPath.ProfilePage);
+            }}
           />
-          <Button variant="secondary" accent="danger" title="Disable 2FA" />
         </Section>
+
+        {isTotpConfigured && (
+          <Section>
+            <H2Title
+              title="Disable two-factor Authentication"
+              description="Disabling Two-factor Authentication significantly increases the risk of unauthorized access to your account."
+            />
+            <Button variant="secondary" accent="danger" title="Disable 2FA" />
+          </Section>
+        )}
       </>
     );
   }

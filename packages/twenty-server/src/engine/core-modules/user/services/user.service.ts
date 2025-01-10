@@ -166,4 +166,8 @@ export class UserService extends TypeOrmQueryService<User> {
       defaultWorkspaceId: workspaceId,
     });
   }
+
+  storeTotpSecret(id: string, totpSecret: string) {
+    return this.userRepository.save({ id, totpSecret });
+  }
 }

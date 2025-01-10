@@ -18,9 +18,9 @@ const StyledDigitInputContainer = styled.div`
 
 const CodeInput = (props: {
   length: number;
-  autoSubmitCallback?: (input: string[]) => void;
+  onAutoSubmit?: (input: string) => void;
 }) => {
-  const { length = 6 } = props;
+  const { length = 6, onAutoSubmit } = props;
   const [value, setValue] = useState(Array.from({ length }).map(() => ''));
   return (
     <StyledDigitInputContainer>
@@ -51,6 +51,11 @@ const CodeInput = (props: {
                     currentInputEl = nextInput;
                   } else {
                     inputEl.blur();
+                  }
+                  if (startingIndex + i === length - 1) {
+                    inputEl.blur();
+                    const newValueAsString = newValue.join('');
+                    onAutoSubmit?.(newValueAsString);
                   }
                 }
               }

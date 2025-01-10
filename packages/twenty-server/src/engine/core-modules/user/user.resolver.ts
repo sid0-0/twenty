@@ -213,6 +213,11 @@ export class UserResolver {
     return `${paths[0]}?token=${fileToken}`;
   }
 
+  @Mutation(() => String)
+  async storeTotpSecret(@AuthUser() { id }: User, @Args('id') totpId: string) {
+    return this.userService.storeTotpSecret(id, totpId);
+  }
+
   @UseGuards(DemoEnvGuard)
   @Mutation(() => User)
   async deleteUser(@AuthUser() { id: userId }: User) {
