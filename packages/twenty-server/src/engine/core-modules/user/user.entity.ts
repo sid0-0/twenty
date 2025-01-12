@@ -65,6 +65,10 @@ export class User {
   @Column({ nullable: true })
   passwordHash: string;
 
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  totpSecret: string;
+
   @Field()
   @Column({ default: false })
   canImpersonate: boolean;
